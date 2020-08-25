@@ -48,7 +48,7 @@
   // "python.jediPath": "~/.miniconda/envs/neovim/lib/python3.8/site-packages",
 
   // snippets
-  "snippets.ultisnips.directories": ["UltiSnips", "~/.config/nvim/snips"],
+  "snippets.ultisnips.directories": ["UltiSnips", "~/.SpaceVim.d/snips"],
   //"snippets.userSnippetsDirectory": "~/.config/nvim/snips",
 
   // emmet
