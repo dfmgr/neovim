@@ -15,12 +15,12 @@ pacman -S neovim python-websocket ctags python-neovim
   
 Automatic install/update:
 ```
-bash -c "$(curl -LSs https://github.com/dfmgr/nvim/raw/master/install.sh)"
+bash -c "$(curl -LSs https://github.com/dfmgr/neovim/raw/master/install.sh)"
 ```
 Manual install:
 ```
 rm -Rf "$HOME/.SpaceVim.d"
-git clone https://github.com/dfmgr/nvim "$HOME/.SpaceVim.d"
+git clone https://github.com/dfmgr/neovim "$HOME/.SpaceVim.d"
 curl -sLf https://spacevim.org/install.sh | bash -s -- --install neovim
 nvim -u ~/.config/nvim/vimrc +SPInstall
 ```
