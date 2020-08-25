@@ -90,7 +90,7 @@ show_optvars "$@"
 APP="neovim ctags rsync "
 PERL=""
 PYTH="sexpdata websocket "
-PIPS="neovim "
+PIPS="neovim neovim-remote websocket "
 CPAN=""
 GEMS=""
 
