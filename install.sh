@@ -179,7 +179,7 @@ run_postinst() {
   rm_rf "$HOME/.SpaceVim.d"
   curl -LSsf https://spacevim.org/install.sh | devnull2 bash -s -- --install neovim
   ln_sf "$APPDIR" "$HOME/.SpaceVim.d"
-  devnull2 /usr/bin/nvim -u "$APPDIR/init.vim" +SPInstall +qall -c q -c q </dev/null
+  devnull2 nvim -u "$APPDIR/init.vim" "+SPInstall" "+qall" -c q -c q </dev/null
 }
 
 execute \
