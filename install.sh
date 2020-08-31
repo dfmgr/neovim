@@ -177,7 +177,7 @@ failexitcode
 run_postinst() {
   dfmgr_run_post
   rm_rf "$HOME/.SpaceVim.d"
-  devnull curl -LSsf https://spacevim.org/install.sh | bash -s -- --install neovim
+  curl -LSsf https://spacevim.org/install.sh | devnull2 bash -s -- --install neovim
   ln_sf "$APPDIR" "$HOME/.SpaceVim.d"
   devnull2 /usr/bin/nvim -u "$APPDIR/init.vim" +SPInstall +qall -c q -c q </dev/null
 }
