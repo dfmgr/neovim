@@ -139,12 +139,12 @@ ensure_perms
 
 if [ -d "$DOWNLOADED_TO/.git" ]; then
   execute \
-    "git_update $APPDIR" \
+    "git_update $DOWNLOADED_TO" \
     "Updating $APPNAME configurations"
 else
   execute \
     "backupapp && \
-        git_clone -q $REPO/$APPNAME $APPDIR" \
+        git_clone -q $REPO/$APPNAME $DOWNLOADED_TO" \
     "Installing $APPNAME configurations"
 fi
 
@@ -179,7 +179,7 @@ run_postinst() {
   rm_rf "$HOME/.SpaceVim.d"
   curl -LSsf https://spacevim.org/install.sh | devnull2 bash -s -- --install neovim
   ln_sf "$DOWNLOADED_TO" "$HOME/.SpaceVim.d"
-  devnull2 nvim -u "$DOWNLOADED_TO/init.vim" "+SPInstall" "+qall" -c q -c q </dev/null
+  nvim -u "$DOWNLOADED_TO/init.vim" "+SPInstall" "+qall" -c q -c q </dev/null &>/dev/null
 }
 
 execute \
