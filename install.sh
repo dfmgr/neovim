@@ -137,6 +137,10 @@ ensure_perms
 
 # Main progam
 
+if [ -d "$APPDIR" ]; then
+  execute "backupapp $APPDIR $APPNAME" "Backing up $APPDIR"
+fi
+
 if [ -d "$DOWNLOADED_TO/.git" ]; then
   execute \
     "git_update $DOWNLOADED_TO" \
@@ -167,10 +171,10 @@ if __am_i_online; then
         "Installing plugin PLUGREP"
     fi
   fi
-fi
 
-# exit on fail
-failexitcode
+  # exit on fail
+  failexitcode
+fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -178,10 +182,13 @@ failexitcode
 
 run_postinst() {
   dfmgr_run_post
-  rm_rf "$HOME/.SpaceVim.d"
-  __curl https://spacevim.org/install.sh | devnull2 bash -s -- --install neovim
-  ln_sf "$DOWNLOADED_TO" "$HOME/.SpaceVim.d"
-  __am_i_online && nvim -u "$DOWNLOADED_TO/init.vim" "+SPInstall" "+qall" -c q -c q </dev/null &>/dev/null
+  if __am_i_online; then
+    __curl https://spacevim.org/install.sh | devnull2 bash -s -- --install neovim
+    ln_sf "$APPDIR" "$HOME/.SpaceVim.d"
+    nvim -u "$APPDIR/init.vim" "+SPInstall" "+qall" -c q -c q </dev/null &>/dev/null
+  else
+    ln_sf "$APPDIR" "$HOME/.SpaceVim.d"
+  fi
 }
 
 execute \
