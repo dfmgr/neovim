@@ -156,17 +156,17 @@ failexitcode
 # Plugins
 
 if __am_i_online; then
-if [ "$PLUGNAMES" != "" ]; then
-  if [ -d "$PLUGDIR"/PLUREP/.git ]; then
-    execute \
-      "git_update $PLUGDIR/PLUGREP" \
-      "Updating plugin PLUGNAME"
-  else
-    execute \
-      "git_clone PLUGINREPO $PLUGDIR/PLUGREP" \
-      "Installing plugin PLUGREP"
+  if [ "$PLUGNAMES" != "" ]; then
+    if [ -d "$PLUGDIR"/PLUREP/.git ]; then
+      execute \
+        "git_update $PLUGDIR/PLUGREP" \
+        "Updating plugin PLUGNAME"
+    else
+      execute \
+        "git_clone PLUGINREPO $PLUGDIR/PLUGREP" \
+        "Installing plugin PLUGREP"
+    fi
   fi
-fi
 fi
 
 # exit on fail
@@ -179,9 +179,9 @@ failexitcode
 run_postinst() {
   dfmgr_run_post
   rm_rf "$HOME/.SpaceVim.d"
-  curl -LSsf https://spacevim.org/install.sh | devnull2 bash -s -- --install neovim
+  __curl https://spacevim.org/install.sh | devnull2 bash -s -- --install neovim
   ln_sf "$DOWNLOADED_TO" "$HOME/.SpaceVim.d"
-  nvim -u "$DOWNLOADED_TO/init.vim" "+SPInstall" "+qall" -c q -c q </dev/null &>/dev/null
+  __am_i_online && nvim -u "$DOWNLOADED_TO/init.vim" "+SPInstall" "+qall" -c q -c q </dev/null &>/dev/null
 }
 
 execute \
