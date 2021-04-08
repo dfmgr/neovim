@@ -51,10 +51,10 @@ scripts_check
 # Defaults
 APPNAME="${APPNAME:-neovim}"
 APPDIR="${APPDIR:-$HOME/.config/$APPNAME}"
-INSTDIR="${INSTDIR}"
-REPO="${DFMGRREPO:-https://github.com/dfmgr/$APPNAME}"
-REPORAW="${REPORAW:-$REPO/raw}"
-APPVERSION="$(__appversion "$REPORAW/master/version.txt")"
+INSTDIR="${INSTDIR:-$HOME/.local/share/CasjaysDev/dfmgr/$APPNAME}"
+REPO="${REPO:-https://github.com/dfmgr/$APPNAME}"
+REPORAW="${REPORAW:-$REPO/$GIT_REPO_BRANCH}"
+APPVERSION="$(__appversion "$REPORAW/version.txt")"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Setup plugins
 PLUGNAMES=""
@@ -146,7 +146,7 @@ fi
 run_postinst() {
   dfmgr_run_post
   if __am_i_online; then
-    __curl https://spacevim.org/install.sh | devnull2 bash -s -- --install neovim
+    __curl https://spacevim.org/install.sh | bash -s -- --install neovim 2>/dev/null
     ln_sf "$APPDIR" "$HOME/.SpaceVim.d"
     nvim -u "$APPDIR/init.vim" "+SPInstall" "+qall" -c q -c q </dev/null &>/dev/null
   else
