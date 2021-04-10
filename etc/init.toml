@@ -122,11 +122,6 @@
     auto-completion-tab-key-behavior = "smart"
 
 [[layers]]
-    name = 'lang#markdown'
-    enableWcwidth = 1
-    listItemIndent = 1
-
-[[layers]]
     name = 'shell'
     default_position = 'top'
     default_height = 30
@@ -140,4 +135,3 @@
 
 [[custom_plugins]]
     name = 'liuchengxu/space-vim-dark'
-
