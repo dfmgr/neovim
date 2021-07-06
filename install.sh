@@ -50,7 +50,7 @@ scripts_check
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Defaults
 APPNAME="${APPNAME:-neovim}"
-APPDIR="$CONF/$APPNAME"
+APPDIR="$CONF/nvim"
 INSTDIR="$CASJAYSDEVSHARE/$SCRIPTS_PREFIX/$APPNAME"
 REPO_BRANCH="${GIT_REPO_BRANCH:-master}"
 REPO="${DFMGR:-https://github.com/dfmgr}/$APPNAME"
