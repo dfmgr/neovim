@@ -81,7 +81,7 @@ dfmgr_run_init
 APP="$APPNAME ctags rsync "
 PERL=""
 PYTH="sexpdata websocket "
-PIPS="neovim neovim-remote websocket "
+PIPS="pip neovim neovim-remote websocket ueberzug "
 CPAN=""
 GEMS=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -147,16 +147,13 @@ fi
 run_postinst() {
   dfmgr_run_post
   if __am_i_online; then
-    bash <(curl -s https://raw.githubusercontent.com/dfmgr/neovim/master/utils/installer/install.sh)
-  #   __curl https://spacevim.org/install.sh | bash -s -- --install neovim 2>/dev/null
-  #   ln_sf "$APPDIR" "$HOME/.SpaceVim.d"
-  #   nvim -u "$APPDIR/init.vim" "+SPInstall" "+qall" -c q -c q </dev/null &>/dev/null
-  # else
-  #   ln_sf "$APPDIR" "$HOME/.SpaceVim.d"
+    git clone https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+    git clone --branch stable https://github.com/ChristianChiarulli/lunarvim.git "$APPDIR"
+    mv "$APPDIR/utils/installer/lv-config.example.lua" "$APPDIR/lv-config.lua"
   fi
 }
 #
-nvim -c ":PackerInstall" -c ":PackerCompile" -c ":PackerUpdate"
+nvim +PackerCompile +PackerInstall
 execute "run_postinst" "Running post install scripts"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # create version file
