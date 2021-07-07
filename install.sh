@@ -135,6 +135,7 @@ if __am_i_online; then
     if [ -d "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim/.git" ]; then
       execute "git_update $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" "Updating plugin packer.nvim"
     else
+      mkd "$HOME/.local/share/nvim/site/pack/packer/start"
       execute
       "git_clone https://github.com/wbthomason/packer.nvim $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" "Installing plugin packer.nvim"
     fi
