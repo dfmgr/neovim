@@ -147,14 +147,16 @@ fi
 run_postinst() {
   dfmgr_run_post
   if __am_i_online; then
-    __curl https://spacevim.org/install.sh | bash -s -- --install neovim 2>/dev/null
-    ln_sf "$APPDIR" "$HOME/.SpaceVim.d"
-    nvim -u "$APPDIR/init.vim" "+SPInstall" "+qall" -c q -c q </dev/null &>/dev/null
-  else
-    ln_sf "$APPDIR" "$HOME/.SpaceVim.d"
+    bash <(curl -s https://raw.githubusercontent.com/dfmgr/neovim/master/utils/installer/install.sh)
+  #   __curl https://spacevim.org/install.sh | bash -s -- --install neovim 2>/dev/null
+  #   ln_sf "$APPDIR" "$HOME/.SpaceVim.d"
+  #   nvim -u "$APPDIR/init.vim" "+SPInstall" "+qall" -c q -c q </dev/null &>/dev/null
+  # else
+  #   ln_sf "$APPDIR" "$HOME/.SpaceVim.d"
   fi
 }
 #
+nvim -c ":PackerInstall" -c ":PackerCompile" -c ":PackerUpdate"
 execute "run_postinst" "Running post install scripts"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # create version file
