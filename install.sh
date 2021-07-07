@@ -148,12 +148,10 @@ run_postinst() {
   dfmgr_run_post
   if __am_i_online; then
     git clone https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
-    git clone --branch stable https://github.com/ChristianChiarulli/lunarvim.git "$APPDIR"
     mv "$APPDIR/utils/installer/lv-config.example.lua" "$APPDIR/lv-config.lua"
   fi
 }
 #
-nvim +PackerCompile +PackerInstall
 execute "run_postinst" "Running post install scripts"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # create version file
