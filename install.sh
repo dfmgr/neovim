@@ -156,6 +156,6 @@ execute "run_postinst" "Running post install scripts"
 dfmgr_install_version
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # exit
-print_blue "Execute the following: nvim +PackerCompile +PackerInstall"
+printf_blue "Execute the following: nvim +PackerCompile +PackerInstall"
 run_exit
 # end
