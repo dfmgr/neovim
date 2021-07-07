@@ -15,7 +15,7 @@ requires:
 Debian based:
 
 ```shell
-apt install neovim python3-websocket python3-sexpdata rsync ctags python3-neovim
+apt install neovim python3-websocket python3-sexpdata rsync exuberant-ctags python3-neovim
 ```  
 
 Fedora Based:
