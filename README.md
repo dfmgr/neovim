@@ -5,7 +5,7 @@ A community-driven modular vim distribution - The ultimate vim configuration
 Automatic install/update:
 
 ```shell
-bash -c "$(curl -LSs https://github.com/dfmgr/neovim/raw/master/install.sh)"
+bash -c "$(curl -LSs https://github.com/dfmgr/neovim/raw/main/install.sh)"
 ```
 
 Manual install:
