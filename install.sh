@@ -119,6 +119,8 @@ if [ -d "$APPDIR" ]; then
   execute "backupapp $APPDIR $APPNAME" "Backing up $APPDIR"
 fi
 # Main progam
+VIM_VER="$(nvim -v | head -n 1 | awk '{print $2}' | sed 's#v##;s#-dev##')"
+if [[ "$VIM_VER" > "0.5.0" ]]; then
 if __am_i_online; then
   if [ -d "$INSTDIR/.git" ]; then
     execute "git_update $INSTDIR" "Updating $APPNAME configurations"
@@ -143,6 +145,7 @@ if __am_i_online; then
   fi
   # exit on fail
   failexitcode $? "Git has failed"
+fi
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # run post install scripts
