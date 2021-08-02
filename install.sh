@@ -78,7 +78,7 @@ show_optvars "$@"
 dfmgr_run_init
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # end with a space
-APP="nvim ctags rsync lua "
+APP="nvim ctags rsync lua luarocks "
 PERL=""
 PYTH="sexpdata websocket "
 PIPS="pip neovim neovim-remote websocket ueberzug "
