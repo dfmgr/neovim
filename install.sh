@@ -138,8 +138,8 @@ if __am_i_online; then
       execute "git_update $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" "Updating plugin packer.nvim"
     else
       execute \
-        "mkd $HOME/.local/share/nvim/site/pack/packer/start && \
-          git_clone https://github.com/wbthomason/packer.nvim $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" \
+        "git_clone https://github.com/wbthomason/packer.nvim $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim && \
+         mkd $HOME/.local/share/nvim/site/pack/packer/start" \
         "Installing plugin packer.nvim"
     fi
   fi

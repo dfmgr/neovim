@@ -2,7 +2,8 @@
 
 set -o nounset # error when referencing undefined variable
 set -o errexit # exit when command fails
-
+packager_dir="$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim
+"
 installnodemac() {
     brew install lua
     brew install node
@@ -15,9 +16,7 @@ installnodeubuntu() {
 }
 
 moveoldnvim() {
-    echo "Not installing LunarVim"
-    echo "Please move your ~/.config/nvim folder before installing"
-    exit
+    echo "Updating your neovim config"
 }
 
 installnodearch() {
@@ -95,13 +94,13 @@ installpynvim() {
 }
 
 installpacker() {
-    git clone https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+    [ -d "$packager_dir" ] || git clone https://github.com/wbthomason/packer.nvim "$packager_dir"
 }
 
 cloneconfig() {
     echo "Cloning LunarVim configuration"
-    git clone --branch stable https://github.com/ChristianChiarulli/lunarvim.git ~/.config/nvim
-    mv $HOME/.config/nvim/utils/installer/lv-config.example.lua $HOME/.config/nvim/lv-config.lua
+    #git clone --branch stable https://github.com/ChristianChiarulli/lunarvim.git ~/.config/nvim
+    #mv $HOME/.config/nvim/utils/installer/lv-config.example.lua $HOME/.config/nvim/lv-config.lua
     # mv $HOME/.config/nvim/utils/init.lua $HOME/.config/nvim/init.lua
     # nvim -u $HOME/.config/nvim/init.lua +PackerCompile +PackerInstall
     nvim +PackerCompile +PackerInstall
@@ -175,7 +174,7 @@ installextrapackages() {
 echo 'Installing LunarVim'
 
 # move old nvim directory if it exists
-[ -d "$HOME/.config/nvim" ] && moveoldnvim
+#[ -d "$HOME/.config/nvim" ] && moveoldnvim
 
 # install pip
 which pip3 >/dev/null && echo "pip installed, moving on..." || asktoinstallpip
@@ -186,20 +185,18 @@ which node >/dev/null && echo "node installed, moving on..." || asktoinstallnode
 # install pynvim
 pip3 list | grep pynvim >/dev/null && echo "pynvim installed, moving on..." || installpynvim
 
-if [ -e "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" ]; then
-    echo 'packer already installed'
-else
-    installpacker
-fi
+#if [ -e "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" ]; then
+#    installpacker
+#fi
 
-if [ -e "$HOME/.config/nvim/init.lua" ]; then
-    echo 'LunarVim already installed'
-else
+#if [ -e "$HOME/.config/nvim/init.lua" ]; then
+#    echo 'LunarVim already installed'
+#else
     # clone config down
     cloneconfig
     # echo 'export PATH=$HOME/.config/nvim/utils/bin:$PATH' >>~/.zshrc
     # echo 'export PATH=$HOME/.config/lunarvim/utils/bin:$PATH' >>~/.bashrc
-fi
+#fi
 
 echo "I recommend you also install and activate a font from here: https://github.com/ryanoasis/nerd-fonts"
 
