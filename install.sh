@@ -121,7 +121,7 @@ fi
 # Main progam
 VIM_VER="$(nvim -v | head -n 1 | awk '{print $2}' | sed 's#v##;s#-dev##')"
 if [[ "$VIM_VER" > "0.5.0" ]]; then
-if __am_i_online; then
+if am_i_online; then
   if [ -d "$INSTDIR/.git" ]; then
     execute "git_update $INSTDIR" "Updating $APPNAME configurations"
   else
@@ -132,7 +132,7 @@ if __am_i_online; then
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Plugins
-if __am_i_online; then
+if am_i_online; then
   if [ "$PLUGNAMES" != "" ]; then
     if [ -d "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim/.git" ]; then
       execute "git_update $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" "Updating plugin packer.nvim"
