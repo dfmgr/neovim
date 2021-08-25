@@ -128,7 +128,7 @@ if [[ "$VIM_VER" > "0.5.0" ]]; then
       execute "git_clone $REPO $INSTDIR" "Installing $APPNAME configurations"
     fi
     # exit on fail
-    failexitcode $? "Git has failed"
+    failexitcode $? "Failed to download $REPO/$APPNAME to $INSTDIR"
   fi
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Plugins
