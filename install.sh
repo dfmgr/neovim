@@ -121,36 +121,35 @@ fi
 # Main progam
 VIM_VER="$(nvim -v | head -n 1 | awk '{print $2}' | sed 's#v##;s#-dev##')"
 if [[ "$VIM_VER" > "0.5.0" ]]; then
-if am_i_online; then
-  if [ -d "$INSTDIR/.git" ]; then
-    execute "git_update $INSTDIR" "Updating $APPNAME configurations"
-  else
-    execute "git_clone $REPO $INSTDIR" "Installing $APPNAME configurations"
-  fi
-  # exit on fail
-  failexitcode $? "Git has failed"
-fi
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Plugins
-if am_i_online; then
-  if [ "$PLUGNAMES" != "" ]; then
-    if [ -d "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim/.git" ]; then
-      execute "git_update $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" "Updating plugin packer.nvim"
+  if am_i_online; then
+    if [ -d "$INSTDIR/.git" ]; then
+      execute "git_update $INSTDIR" "Updating $APPNAME configurations"
     else
-      execute \
-        "git_clone https://github.com/wbthomason/packer.nvim $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim && \
-         mkd $HOME/.local/share/nvim/site/pack/packer/start" \
-        "Installing plugin packer.nvim"
+      execute "git_clone $REPO $INSTDIR" "Installing $APPNAME configurations"
     fi
+    # exit on fail
+    failexitcode $? "Git has failed"
   fi
-  # exit on fail
-  failexitcode $? "Git has failed"
-fi
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # Plugins
+  if am_i_online; then
+    if [ "$PLUGNAMES" != "" ]; then
+      if [ -d "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim/.git" ]; then
+        execute "git_update $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" "Updating plugin packer.nvim"
+      else
+        execute \
+          "git_clone https://github.com/wbthomason/packer.nvim $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" "Installing plugin packer.nvim"
+      fi
+    fi
+    # exit on fail
+    failexitcode $? "Git has failed"
+  fi
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # run post install scripts
 run_postinst() {
   dfmgr_run_post
+  mkd "$HOME/.local/share/nvim/site/pack/packer/start"
 }
 #
 execute "run_postinst" "Running post install scripts"
