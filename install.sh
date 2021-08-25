@@ -142,7 +142,7 @@ if [[ "$VIM_VER" > "0.5.0" ]]; then
       fi
     fi
     # exit on fail
-    failexitcode $? "Git has failed"
+    failexitcode $? "Failed to download Plugin repo"
   fi
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
