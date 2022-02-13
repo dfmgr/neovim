@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+##@Version       : 202108021519-git
+# @Author        : Jason Hempstead
+# @Contact       : jason@casjaysdev.com
+# @License       : LICENSE.md
+# @ReadME        : nv --help
+# @Copyright     : Copyright: (c) 2022 Jason Hempstead, Casjays Developments
+# @Created       : Sunday, Feb 13, 2022 11:01 EST
+# @File          : nv
+# @Description   :
+# @TODO          :
+# @Other         :
+# @Resource      :
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+APPNAME="$(basename "$0")"
+VERSION="202108021519-git"
+USER="${SUDO_USER:-${USER}}"
+HOME="${USER_HOME:-${HOME}}"
+SRC_DIR="${BASH_SOURCE%/*}"
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Set bash options
+if [[ "$1" == "--debug" ]]; then shift 1 && set -xo pipefail && export SCRIPT_OPTS="--debug" && export _DEBUG="on"; fi
+trap 'exitCode=${exitCode:-$?};[ -n "$NV_TEMP_FILE" ] && [ -f "$NV_TEMP_FILE" ] && rm -Rf "$NV_TEMP_FILE" &>/dev/null' EXIT
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+nvim -u "$HOME/.config/nvim/init.lua"
