@@ -58,8 +58,8 @@ REPORAW="$REPO/raw/$REPO_BRANCH"
 APPVERSION="$(__appversion "$REPORAW/version.txt")"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Setup plugins
-PLUGNAMES="packer.nvim"
-PLUGDIR="${SHARE:-$HOME/.local/share}/$APPNAME"
+#PLUGNAMES="packer.nvim"
+#PLUGDIR="${SHARE:-$HOME/.local/share}/$APPNAME"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Call the dfmgr function
 dfmgr_install
@@ -107,7 +107,7 @@ install_cpan "$CPAN"
 install_gem "$GEMS"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Other dependencies
-dotfilesreq git misc
+dotfilesreq
 dotfilesreqadmin
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Ensure directories exist
@@ -137,8 +137,7 @@ if [[ "$VIM_VER" > "0.5.0" ]]; then
       if [ -d "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim/.git" ]; then
         execute "git_update $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" "Updating plugin packer.nvim"
       else
-        execute \
-          "git_clone https://github.com/wbthomason/packer.nvim $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" "Installing plugin packer.nvim"
+        execute  "git_clone https://github.com/wbthomason/packer.nvim $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" "Installing plugin packer.nvim"
       fi
     fi
     # exit on fail
@@ -149,7 +148,7 @@ fi
 # run post install scripts
 run_postinst() {
   dfmgr_run_post
-  mkd "$HOME/.local/share/nvim/site/pack/packer/start"
+  #mkd "$HOME/.local/share/nvim/site/pack/packer/start"
 }
 #
 execute "run_postinst" "Running post install scripts"
