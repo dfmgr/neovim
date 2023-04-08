@@ -24,5 +24,6 @@ if [[ "$1" == "--debug" ]]; then shift 1 && set -xo pipefail && export SCRIPT_OP
 trap 'exitCode=${exitCode:-$?};[ -n "$NV_TEMP_FILE" ] && [ -f "$NV_TEMP_FILE" ] && rm -Rf "$NV_TEMP_FILE" &>/dev/null' EXIT
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-nvim -u "$HOME/.config/nvim/init.lua"
+nvim -u "$HOME/.config/nvim/init.lua" "$@"
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+exit $?

@@ -137,7 +137,7 @@ if [[ "$VIM_VER" > "0.5.0" ]]; then
       if [ -d "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim/.git" ]; then
         execute "git_update $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" "Updating plugin packer.nvim"
       else
-        execute  "git_clone https://github.com/wbthomason/packer.nvim $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" "Installing plugin packer.nvim"
+        execute "git_clone https://github.com/wbthomason/packer.nvim $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" "Installing plugin packer.nvim"
       fi
     fi
     # exit on fail
@@ -148,6 +148,7 @@ fi
 # run post install scripts
 run_postinst() {
   dfmgr_run_post
+  __replace "REPLACE_HOME" "$HOME" "$INSTDIR/etc/after/plugin/dashboard.rc.lua"
   #mkd "$HOME/.local/share/nvim/site/pack/packer/start"
 }
 #
