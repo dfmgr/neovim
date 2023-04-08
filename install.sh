@@ -149,7 +149,6 @@ fi
 run_postinst() {
   dfmgr_run_post
   sed -i "s|REPLACE_HOME|$HOME|g" "$CONF/after/plugin/dashboard.rc.lua"
-  #mkd "$HOME/.local/share/nvim/site/pack/packer/start"
 }
 #
 execute "run_postinst" "Running post install scripts"
