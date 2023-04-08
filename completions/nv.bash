@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # bash command completion for neovim remote.
-# Source that file in your bashrc to use it.
+# Source this file in your bashrc to use it.
 
-_nvr_opts_completions() {
+_nv_opts_completions() {
   local cur prev opts
   cur=${COMP_WORDS[COMP_CWORD]}
   prev=${COMP_WORDS[COMP_CWORD - 1]}
@@ -49,4 +49,4 @@ _nvr_opts_completions() {
   return 0
 }
 
-complete -o default -F _nvr_opts_completions nvr
+complete -o default -F _nv_opts_completions nv
