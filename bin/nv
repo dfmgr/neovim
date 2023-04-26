@@ -22,8 +22,8 @@ SRC_DIR="${BASH_SOURCE%/*}"
 # Set bash options
 if [[ "$1" == "--debug" ]]; then shift 1 && set -xo pipefail && export SCRIPT_OPTS="--debug" && export _DEBUG="on"; fi
 trap 'exitCode=${exitCode:-$?};[ -n "$NV_TEMP_FILE" ] && [ -f "$NV_TEMP_FILE" ] && rm -Rf "$NV_TEMP_FILE" &>/dev/null' EXIT
-
+neovim="$(type -P nvim || type -P neovim || echo 'false')"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-nvim -u "$HOME/.config/nvim/init.lua" "$@"
+$neovim -u "$HOME/.config/nvim/init.lua" "$@"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 exit $?
