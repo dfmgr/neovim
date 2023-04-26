@@ -109,7 +109,7 @@ APPVERSION="$(__appversion "https://github.com/$SCRIPTS_PREFIX/$APPNAME/raw/$REP
 PLUGIN_REPOS=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Specify required system packages you can prefix os to OS_PACKAGES: MAC_OS_PACKAGES WIN_OS_PACKAGES
-OS_PACKAGES="neovim ctags rsync lua luarocks "
+OS_PACKAGES="nvim ctags rsync lua luarocks "
 OS_PACKAGES+=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Define required system python packages
@@ -148,7 +148,7 @@ __run_post_install() {
   neovim="$(type -P nvim || type -P neovim || echo 'false')"
   sed -i "s|REPLACE_HOME|$HOME|g" "$APPDIR/after/plugin/dashboard.rc.lua"
   [ -e "$HOME/.config/nvim" ] || ln_sf "$APPDIR" "$HOME/.config/nvim"
-  $neovim +PackerCompile +PackerInstall >/dev/null </dev/stdin
+  $neovim +PackerCompile +PackerInstall +qall >/dev/null
   return ${?:-0}
 }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
