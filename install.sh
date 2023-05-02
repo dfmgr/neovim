@@ -200,11 +200,10 @@ __run_prepost_install() {
 # run after primary post install function
 __run_post_install() {
   local getRunStatus=0
-  neovim="$(type -P nvim || type -P neovim || echo 'false')"
   SET_REQ_VER="0.5.0"
+  neovim="$(type -P nvim || type -P neovim || echo 'false')"
   GET_VIM_VER="$($neovim -v | head -n 1 | awk '{print $2}' | sed 's|v||g;s|-dev||g' || echo '0.0')"
-  REQ_VER="$(__get_version "$REQ_VER")"
-  VIM_VER="$(__get_version "$GET_VIM_VER")"
+  REQ_VER="$(__get_version "$SET_REQ_VER")" VIM_VER="$(__get_version "$GET_VIM_VER")"
   [ "$VIM_VER" -gt "$REQ_VER" ] || { printf_red "This requires neovim version higher than $SET_REQ_VER: you have $GET_VIM_VER" >&2 && return 1; }
   __replace_one "REPLACE_HOME" "$HOME" "$APPDIR/after/plugin/dashboard.rc.lua"
   [ -e "$HOME/.config/nvim" ] || __symlink "$APPDIR" "$HOME/.config/nvim"
