@@ -196,7 +196,11 @@ __run_pre_install() {
 # run before primary post install function
 __run_prepost_install() {
   local getRunStatus=0
-
+  if [ -d "$HOME/.config/nvim/.git" ]; then
+    git -C "$HOME/.config/nvim" pull -q
+  else
+    git clone "https://github.com/NvChad/NvChad" "$HOME/.config/nvim" --depth 1 -q
+  fi
   return $getRunStatus
 }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
