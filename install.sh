@@ -220,14 +220,16 @@ __run_post_install() {
       if [ "$os_arch" = "x86_64" ]; then
         save_file="/tmp/nvim.tar.gz"
         curl -q -LSsf "https://github.com/neovim/neovim/releases/download/v$neovim_version_required/nvim-linux64.tar.gz" -o "$save_file"
-        tar xfvz "$save_file" -C /tmp && mv -fv "/tmp/nvim-linux64" "$HOME/.local/share/neovim"
+        tar xfvz "$save_file" -C /tmp && rsync -ah "/tmp/nvim-linux64/." "$HOME/.local/share/neovim/"
+        rm -Rf "$save_file" "/tmp/nvim-linux64"
       fi
       ;;
     darwin)
       save_file="/tmp/nvim.tar.gz"
       curl -q -LSsf "https://github.com/neovim/neovim/releases/download/v$neovim_version_required/nvim-macos.tar.gz" -o "$save_file"
       xattr -c $save_file
-      tar xfvz "$save_file" -C /tmp && mv -fv "/tmp/nvim-macos" "$HOME/.local/share/neovim"
+      tar xfvz "$save_file" -C /tmp && rsync -a "/tmp/nvim-macos/." "$HOME/.local/share/neovim/"
+      rm -Rf "$save_file" "/tmp/nvim-macos"
       ;;
     esac
   fi
