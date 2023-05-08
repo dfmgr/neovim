@@ -202,14 +202,33 @@ __run_prepost_install() {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # run after primary post install function
 __run_post_install() {
-  local getRunStatus=0
-  SET_REQ_VER="0.5.0"
+  local getRunStatus=0 save_file=""
+  neovim_version_required="0.9.0"
+  os_arch="$(uname -m | tr '[:upper:]' '[:lower:]')"
+  os_name="$(uname -s | tr '[:upper:]' '[:lower:]')"
   neovim="$(type -P nvim || type -P neovim || echo 'false')"
-  GET_VIM_VER="$($neovim -v | head -n 1 | awk '{print $2}' | sed 's|v||g;s|-dev||g' || echo '0.0')"
-  REQ_VER="$(__get_version "$SET_REQ_VER")" VIM_VER="$(__get_version "$GET_VIM_VER")"
-  [ "$VIM_VER" -gt "$REQ_VER" ] || { printf_red "This requires neovim version higher than $SET_REQ_VER: you have $GET_VIM_VER" >&2 && return 1; }
-  __replace_one "REPLACE_HOME" "$HOME" "$APPDIR/after/plugin/dashboard.rc.lua"
-  [ -e "$HOME/.config/nvim" ] || __symlink "$APPDIR" "$HOME/.config/nvim"
+  neovim_version_installed="$($neovim -v | head -n 1 | awk '{print $2}' | sed 's|v||g;s|-dev||g' || echo '0.0')"
+  REQ_VER="$(__get_version "$neovim_version_required")" VIM_VER="$(__get_version "$neovim_version_installed")"
+  [ -d "$HOME/.local/share/neovim" ] || __mkdir "$HOME/.local/share/neovim"
+  if [ "$VIM_VER" -lt "$REQ_VER" ] || [ -z "$neovim" ]; then
+    case "$os_name" in
+    linux)
+      if [ "$os_arch" = "x86_64" ]; then
+        save_file="/tmp/nvim.tar.gz"
+        curl -q -LSsf "https://github.com/neovim/neovim/releases/download/v$neovim_version_required/nvim-linux64.tar.gz" -o "$save_file"
+        tar xfvz "$save_file" -C /tmp && mv -fv "/tmp/nvim-linux64" "$HOME/.local/share/neovim"
+      fi
+      ;;
+    darwin)
+      save_file="/tmp/nvim.tar.gz"
+      curl -q -LSsf "https://github.com/neovim/neovim/releases/download/v$neovim_version_required/nvim-macos.tar.gz" -o "$save_file"
+      xattr -c $save_file
+      tar xfvz "$save_file" -C /tmp && mv -fv "/tmp/nvim-macos" "$HOME/.local/share/neovim"
+      ;;
+    esac
+  fi
+  [ -f "$HOME/.local/share/neovim/bin/nvim" ] && printf '#!/usr/bin/env sh\n\nexec %s "$@"' "$HOME/.local/share/neovim/bin/nvim"
+  [ -e "$HOME/.config/nvim/lua/custom" ] || __symlink "$APPDIR/lua/custom" "$HOME/.config/nvim/lua/custom"
   return $getRunStatus
 }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

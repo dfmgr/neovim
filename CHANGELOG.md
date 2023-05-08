@@ -1,3 +1,26 @@
+## 🗃️ Changelog: 2023-05-08 at 19:17:29 🗃️  
+
+🗃️ Committing everything that changed 🗃️  
+  
+  
+etc/after/plugin/dashboard.rc.lua  
+etc/after/plugin/orgmode.rc.lua  
+etc/after/plugin/telescope.rc.lua  
+etc/after/plugin/treesitter.rc.lua  
+etc/after/plugin/which-key.rc.lua  
+etc/init.lua  
+etc/lua/custom/  
+etc/lua/dt/base.lua  
+etc/lua/dt/bootstrap.lua  
+etc/lua/dt/highlights.lua  
+etc/lua/dt/maps.lua  
+etc/lua/dt/plugins.lua  
+install.sh  
+
+
+### 🗃️ End of changes for 202305030940-git 🗃️  
+
+----  
 ## 🗃️ Changelog: 2023-05-03 at 09:40:04 🗃️  
 
 🗃️ Committing everything that changed 🗃️  
