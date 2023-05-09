@@ -166,7 +166,7 @@ WIN_OS_PACKAGES=""
 AUR_PACKAGES=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Define required system python packages
-PYTHON_PACKAGES="sexpdata websocket pynvim"
+PYTHON_PACKAGES=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Define required system perl packages
 PERL_PACKAGES=""
@@ -175,7 +175,7 @@ PERL_PACKAGES=""
 NODEJS=""
 PERL_CPAN=""
 RUBY_GEMS=""
-PYTHON_PIP="neovim-remote ueberzug $PYTHON_PACKAGES"
+PYTHON_PIP="neovim-remote sexpdata websocket pynvim"
 PHP_COMPOSER=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Run custom actions
@@ -184,7 +184,7 @@ PHP_COMPOSER=""
 # Show a custom message after install
 __run_post_message() {
   neovim="$(type -P nvim || type -P neovim || echo 'false')"
-  eval $neovim +PackerCompile +PackerInstall +qall
+  eval $neovim +qall
 }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Define pre-install scripts

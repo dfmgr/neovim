@@ -1,3 +1,14 @@
+## 🗃️ Changelog: 2023-05-08 at 22:27:40 🗃️  
+
+🗃️ Removed ueberzug as a dependency 🗃️  
+  
+  
+install.sh  
+
+
+### 🗃️ End of changes for 202305081930-git 🗃️  
+
+----  
 ## 🗃️ Changelog: 2023-05-08 at 19:30:10 🗃️  
 
 🗃️ Committing everything that changed 🗃️  
