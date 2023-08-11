@@ -1,3 +1,15 @@
+## 🗃️ Changelog: 2023-08-10 at 20:07:50 🗃️  
+
+🗃️ Updated domain names 🗃️  
+  
+  
+bin/nv  
+install.sh  
+
+
+### 🗃️ End of changes for 202305082227-git 🗃️  
+
+----  
 ## 🗃️ Changelog: 2023-05-08 at 22:27:40 🗃️  
 
 🗃️ Removed ueberzug as a dependency 🗃️  
