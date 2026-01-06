@@ -1,29 +1,184 @@
 #!/usr/bin/env bash
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-##@Version       : 202108021519-git
+##@Version       : 202601061012-git
 # @Author        : Jason Hempstead
 # @Contact       : jason@casjaysdev.pro
-# @License       : LICENSE.md
+# @License       : WTFPL
 # @ReadME        : nv --help
-# @Copyright     : Copyright: (c) 2022 Jason Hempstead, Casjays Developments
-# @Created       : Sunday, Feb 13, 2022 11:01 EST
+# @Copyright     : Copyright: (c) 2022 Jason Hempstead, CasjaysDev
+# @Created       : Tuesday, Jan 01, 2022 00:00 EDT
 # @File          : nv
-# @Description   :
+# @Description   : Neovim wrapper script with custom configuration
+# @Changelog     : Refactored for self-contained operation
 # @TODO          :
 # @Other         :
 # @Resource      :
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-APPNAME="$(basename "$0")"
-VERSION="202108021519-git"
+# Script variables
+PROG="nv"
+VERSION="202601061012-git"
 USER="${SUDO_USER:-${USER}}"
 HOME="${USER_HOME:-${HOME}}"
-SRC_DIR="${BASH_SOURCE%/*}"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Set bash options
-if [[ "$1" == "--debug" ]]; then shift 1 && set -xo pipefail && export SCRIPT_OPTS="--debug" && export _DEBUG="on"; fi
-trap 'exitCode=${exitCode:-$?};[ -n "$NV_TEMP_FILE" ] && [ -f "$NV_TEMP_FILE" ] && rm -Rf "$NV_TEMP_FILE" &>/dev/null' EXIT
-neovim="$(type -P nvim || type -P neovim || echo 'false')"
+# Environment Detection
+__get_os() {
+  case "$(uname -s)" in
+    Linux*) echo "linux" ;;
+    Darwin*) echo "mac" ;;
+    *BSD*) echo "bsd" ;;
+    MINGW*|MSYS*|CYGWIN*) echo "windows" ;;
+    *) echo "unknown" ;;
+  esac
+}
+
+__is_remote() {
+  [ -n "${SSH_CLIENT:-}" ] || [ -n "${SSH_TTY:-}" ] || [ -n "${SSH_CONNECTION:-}" ]
+}
+
+__has_display() {
+  [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]
+}
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-$neovim -u "$HOME/.config/nvim/init.lua" "$@"
+# Core helper functions
+__cmd_exists() { command -v "$1" >/dev/null 2>&1; }
+
+__is_running() {
+  local proc="$1"
+  case "$(__get_os)" in
+    mac) pgrep -x "$proc" >/dev/null 2>&1 ;;
+    windows) tasklist 2>/dev/null | grep -qi "$proc" ;;
+    *) pgrep -x "$proc" >/dev/null 2>&1 || pgrep -f "$proc" >/dev/null 2>&1 ;;
+  esac
+}
+
+__printf_color() {
+  local color="${2:-0}"
+  printf "\033[0;%sm%s\033[0m\n" "$color" "$1"
+}
+__printf_red() { __printf_color "$1" "31"; }
+__printf_green() { __printf_color "$1" "32"; }
+__printf_yellow() { __printf_color "$1" "33"; }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Smart notifications
+__notifications() {
+  local title="$1" msg="$2"
+
+  # Remote/no display - just print to stderr
+  if __is_remote || ! __has_display; then
+    printf "[%s] %s\n" "$title" "$msg" >&2
+    return 0
+  fi
+
+  # GUI notifications based on OS
+  case "$(__get_os)" in
+    mac)
+      osascript -e "display notification \"$msg\" with title \"$title\"" 2>/dev/null && return 0
+      ;;
+    linux|bsd)
+      if __cmd_exists notify-send; then
+        notify-send "$title" "$msg" 2>/dev/null && return 0
+      fi
+      ;;
+    windows)
+      if __cmd_exists powershell.exe; then
+        powershell.exe -Command "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('$msg', '$title')" 2>/dev/null && return 0
+      fi
+      ;;
+  esac
+
+  # Fallback
+  printf "[%s] %s\n" "$title" "$msg" >&2
+}
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Find neovim binary
+__find_neovim() {
+  if __cmd_exists nvim; then
+    command -v nvim
+  elif __cmd_exists neovim; then
+    command -v neovim
+  else
+    echo ""
+  fi
+}
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Version and help
+__version() {
+  echo "$PROG $VERSION"
+  local neovim_cmd
+  neovim_cmd="$(__find_neovim)"
+  if [ -n "$neovim_cmd" ]; then
+    printf "Neovim: "
+    "$neovim_cmd" --version | head -1
+  fi
+}
+
+__help() {
+  cat <<EOF
+$PROG $VERSION - Neovim wrapper script
+
+Usage: $PROG [options] [files...]
+
+Options:
+  -v, --version    Show version
+  -h, --help       Show this help
+  --debug          Enable debug mode (set -x)
+
+Description:
+  Wrapper script for Neovim that uses custom configuration.
+  All other options are passed directly to Neovim.
+
+Configuration:
+  Uses config from: \$HOME/.config/nvim/init.lua
+
+Environment:
+  NV_TEMP_FILE     Temporary file (auto-cleaned on exit)
+EOF
+}
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Main function
+main() {
+  local exitCode=0
+  local NEOVIM_CMD=""
+  local NVIM_CONFIG="${HOME}/.config/nvim/init.lua"
+
+  # Parse options
+  case "${1:-}" in
+    -v|--version) __version; exit 0 ;;
+    -h|--help) __help; exit 0 ;;
+    --debug)
+      shift
+      set -xo pipefail
+      export SCRIPT_OPTS="--debug"
+      export _DEBUG="on"
+      ;;
+  esac
+
+  # Find neovim
+  NEOVIM_CMD="$(__find_neovim)"
+
+  # Check for neovim
+  if [ -z "$NEOVIM_CMD" ]; then
+    __printf_red "Error: Neovim is not installed"
+    __notifications "$PROG" "Error: Neovim is not installed"
+    exit 1
+  fi
+
+  # Cleanup trap
+  trap 'exitCode=${exitCode:-$?}; [ -n "$NV_TEMP_FILE" ] && [ -f "$NV_TEMP_FILE" ] && rm -Rf "$NV_TEMP_FILE" &>/dev/null; exit $exitCode' EXIT INT TERM
+
+  # Run neovim with custom config if available
+  if [ -f "$NVIM_CONFIG" ]; then
+    exec "$NEOVIM_CMD" -u "$NVIM_CONFIG" "$@"
+  else
+    # Fall back to default config if custom one doesn't exist
+    exec "$NEOVIM_CMD" "$@"
+  fi
+
+  return "$exitCode"
+}
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Execute
+main "$@"
 exit $?
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# end
