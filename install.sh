@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck shell=bash
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-##@Version           :  202304302239-git
+##@Version           :  202611221250-git
 # @@Author           :  Jason Hempstead
 # @@Contact          :  jason@casjaysdev.pro
 # @@License          :  WTFPL
@@ -25,7 +25,7 @@
 # shellcheck disable=SC2199
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 APPNAME="neovim"
-VERSION="202304302239-git"
+VERSION="202611221250-git"
 HOME="${USER_HOME:-$HOME}"
 USER="${SUDO_USER:-$USER}"
 RUN_USER="${SUDO_USER:-$USER}"
@@ -47,8 +47,69 @@ BUILD_NAME="$APPNAME"
 trap 'retVal=$?;trap_exit' ERR EXIT SIGINT
 #if [ ! -t 0 ] && { [ "$1" = --term ] || [ $# = 0 ]; }; then { [ "$1" = --term ] && shift 1 || true; } && TERMINAL_APP="TRUE" myterminal -e "$APPNAME $*" && exit || exit 1; fi
 [ "$1" = "--debug" ] && set -x && export SCRIPT_OPTS="--debug" && export _DEBUG="on"
-[ "$1" = "--raw" ] && export SHOW_RAW="true"
+# Resolve CLI color flags before loading the shared installer functions.
+DFMGR_INSTALLER_COLOR_MODE="${PRINTF_COLOR_STATE:-auto}"
+DFMGR_INSTALLER_ARGS=()
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+  --)
+    DFMGR_INSTALLER_ARGS+=("$@")
+    break
+    ;;
+  --no-color | --raw)
+    DFMGR_INSTALLER_COLOR_MODE="no"
+    shift
+    ;;
+  --color)
+    if [ "$#" -lt 2 ]; then
+      trap - ERR EXIT SIGINT
+      printf '%s\n' "--color requires auto, yes, or no" >&2
+      exit 2
+    fi
+    DFMGR_INSTALLER_COLOR_MODE="$2"
+    shift 2
+    ;;
+  --color=*)
+    DFMGR_INSTALLER_COLOR_MODE="${1#*=}"
+    shift
+    ;;
+  *)
+    DFMGR_INSTALLER_ARGS+=("$1")
+    shift
+    ;;
+  esac
+done
+case "$DFMGR_INSTALLER_COLOR_MODE" in
+  auto | yes | no) ;;
+  *)
+    trap - ERR EXIT SIGINT
+    printf '%s\n' "Invalid color mode: $DFMGR_INSTALLER_COLOR_MODE" >&2
+    exit 2
+    ;;
+esac
+[ -n "${NO_COLOR+x}" ] && DFMGR_INSTALLER_COLOR_MODE="no"
+export PRINTF_COLOR_STATE="$DFMGR_INSTALLER_COLOR_MODE"
+case "$DFMGR_INSTALLER_COLOR_MODE" in
+  no) export SHOW_RAW="true" ;;
+  yes) unset SHOW_RAW ;;
+  auto) [ -t 1 ] || export SHOW_RAW="true" ;;
+esac
+set -- "${DFMGR_INSTALLER_ARGS[@]}"
 set -o pipefail
+# Apply bounded defaults to every curl request unless the call already sets them.
+curl() {
+  local option has_connect_timeout="no" has_max_time="no"
+  local -a curl_deadlines=()
+  for option in "$@"; do
+    case "$option" in
+      --connect-timeout | --connect-timeout=* | -connect-timeout | -connect-timeout=*) has_connect_timeout="yes" ;;
+      --max-time | --max-time=* | -m | -m[0-9]* | -m=*) has_max_time="yes" ;;
+    esac
+  done
+  [ "$has_connect_timeout" = "yes" ] || curl_deadlines+=(--connect-timeout 10)
+  [ "$has_max_time" = "yes" ] || curl_deadlines+=(--max-time 60)
+  command curl -q "${curl_deadlines[@]}" "$@"
+}
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 for app in curl wget git; do type -P "$app" >/dev/null 2>&1 || missing_app+=("$app"); done && [ -z "${missing_app[*]}" ] || { printf '%s\n' "${missing_app[*]}" && exit 1; }
 connect_test() { curl -q -ILSsf --retry 1 --max-time 2 "https://1.1.1.1" 2>&1 | grep -iq 'server:*.cloudflare' || return 1; }
